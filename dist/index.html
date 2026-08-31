@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DictateAI - Teacher PDF Dictation & Speech Assistant</title>
+  <meta name="description" content="A teacher-like PDF dictation web application that reads text word-by-word with intelligent writing pauses, voice commands, and word rewind controls.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="./assets/index-BYQM8udi.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-BWUZa7V2.css">
+</head>
+<body class="dark-theme">
+  <div id="app" class="app-container">
+    
+    <!-- TOP HEADER -->
+    <header class="app-header">
+      <div class="brand-logo">
+        <div class="logo-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+            <line x1="12" y1="19" x2="12" y2="22"></line>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>Dictate<span>AI</span></h1>
+          <span class="tagline">Teacher PDF Dictation & Writing Assistant</span>
+        </div>
+      </div>
+
+      <div class="header-status">
+        <div id="dictationStateBadge" class="status-badge state-idle">
+          <span class="badge-dot"></span>
+          <span id="stateText">Ready</span>
+        </div>
+
+        <button id="voiceCommandToggle" class="btn btn-mic-toggle" title="Toggle Voice Commands">
+          <svg class="mic-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+            <line x1="12" y1="19" x2="12" y2="23"></line>
+            <line x1="8" y1="23" x2="16" y2="23"></line>
+          </svg>
+          <span id="voiceMicStatus">Voice Commands Off</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN WORKSPACE -->
+    <main class="main-content">
+      
+      <!-- LEFT SIDEBAR: CONTROLS & SETTINGS -->
+      <aside class="sidebar-controls">
+        
+        <!-- INPUT / DOCUMENT SOURCE SELECTOR -->
+        <section class="card source-card">
+          <div class="card-header">
+            <h3>Document Source</h3>
+            <div class="tab-pills">
+              <button id="tabPdf" class="tab-btn active" data-tab="pdf">Upload PDF</button>
+              <button id="tabText" class="tab-btn" data-tab="text">Paste Text</button>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <!-- PDF Upload Zone -->
+            <div id="pdfUploadZone" class="upload-zone tab-content active">
+              <input type="file" id="pdfFileInput" accept=".pdf,application/pdf,application/octet-stream,*/*" class="file-input-hidden">
+              <label for="pdfFileInput" class="upload-label" id="uploadBoxLabel">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="12" y1="18" x2="12" y2="12"></line>
+                  <line x1="9" y1="15" x2="15" y2="15"></line>
+                </svg>
+                <div class="upload-text">
+                  <strong>Tap to Select PDF / Document</strong>
+                  <small>Works with iOS Files, Android Drive, & Downloads</small>
+                </div>
+              </label>
+              
+              <button type="button" id="mobileChoosePdfBtn" class="btn btn-primary btn-full mobile-pick-btn">
+                📁 Browse & Select PDF File
+              </button>
+
+              <div id="fileNameDisplay" class="file-name-display hidden">
+                <span id="pdfFileName">document.pdf</span>
+                <button id="removePdfBtn" class="btn-icon-small" title="Remove PDF">&times;</button>
+              </div>
+            </div>
+
+            <!-- Direct Text Input Zone -->
+            <div id="textInputZone" class="tab-content hidden">
+              <div class="text-actions-bar">
+                <button type="button" id="btnPasteClipboard" class="btn btn-secondary btn-sm btn-full">
+                  📋 Paste Text from Clipboard
+                </button>
+              </div>
+              <textarea id="rawTextInput" placeholder="Paste or type text paragraphs here for dictation..." rows="6"></textarea>
+            </div>
+
+            <div class="sample-btn-wrapper">
+              <button id="loadSampleBtn" class="btn btn-secondary btn-full">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                Load Demo Teacher Essay
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- WRITING SPEED & DICTATION PAUSE CONFIG -->
+        <section class="card settings-card">
+          <div class="card-header">
+            <h3>Writing Speed & Teacher Pauses</h3>
+          </div>
+          <div class="card-body">
+            
+            <!-- Speed Multiplier Presets & Voice Commands -->
+            <div class="control-group">
+              <div class="control-label-row">
+                <label>Speed Multiplier</label>
+                <span id="speedMultDisplay" class="value-highlight">1.0x (Normal)</span>
+              </div>
+              <div class="multiplier-btn-group">
+                <button id="btnMult05" class="btn btn-secondary btn-xs" data-mult="0.5">0.5x</button>
+                <button id="btnMult10" class="btn btn-primary btn-xs active" data-mult="1.0">1.0x (Normal)</button>
+                <button id="btnMult15" class="btn btn-secondary btn-xs" data-mult="1.5">1.5x</button>
+                <button id="btnMult20" class="btn btn-secondary btn-xs" data-mult="2.0">2x Speed</button>
+              </div>
+            </div>
+
+            <!-- Dictate Punctuation Marks Checkbox -->
+            <div class="control-group checkbox-group">
+              <label class="checkbox-label" for="dictatePunctuationToggle">
+                <input type="checkbox" id="dictatePunctuationToggle" checked>
+                <span>Dictate Punctuations (say "comma", "full stop", "colon")</span>
+              </label>
+            </div>
+
+            <!-- Announce New Paragraph Checkbox -->
+            <div class="control-group checkbox-group">
+              <label class="checkbox-label" for="announceParagraphToggle">
+                <input type="checkbox" id="announceParagraphToggle" checked>
+                <span>Announce New Paragraph ("Warning user, new paragraph")</span>
+              </label>
+            </div>
+
+            <!-- Writing Speed (WPM) Slider -->
+            <div class="control-group">
+              <div class="control-label-row">
+                <label for="wpmSlider">Base Handwriting Speed</label>
+                <span id="wpmValueDisplay" class="value-highlight">18 WPM</span>
+              </div>
+              <input type="range" id="wpmSlider" min="6" max="45" value="18" step="1">
+              <div class="range-hints">
+                <span>Slow (8 WPM)</span>
+                <span>Normal (18 WPM)</span>
+                <span>Fast (30 WPM)</span>
+              </div>
+              <p id="wpmCalcNotice" class="calc-notice">Calculated pause: ~2.4s per word</p>
+            </div>
+
+            <!-- Sentence & Comma Extra Pauses -->
+            <div class="control-group">
+              <div class="control-label-row">
+                <label for="commaPauseSlider">Comma / Clause Pause</label>
+                <span id="commaPauseDisplay" class="value-highlight">1.2s</span>
+              </div>
+              <input type="range" id="commaPauseSlider" min="0.5" max="3.0" value="1.2" step="0.1">
+            </div>
+
+            <div class="control-group">
+              <div class="control-label-row">
+                <label for="periodPauseSlider">Full Stop / Sentence Pause</label>
+                <span id="periodPauseDisplay" class="value-highlight">2.5s</span>
+              </div>
+              <input type="range" id="periodPauseSlider" min="1.0" max="5.0" value="2.5" step="0.1">
+            </div>
+
+            <!-- Speech Synthesis Voice Settings -->
+            <div class="control-group">
+              <label for="voiceSelect">Teacher Voice</label>
+              <select id="voiceSelect" class="select-input">
+                <option value="">Loading system voices...</option>
+              </select>
+            </div>
+
+            <div class="control-row-dual">
+              <div class="control-group">
+                <label for="pitchSlider">Pitch: <span id="pitchDisplay">1.05</span></label>
+                <input type="range" id="pitchSlider" min="0.7" max="1.3" value="1.05" step="0.05">
+              </div>
+              <div class="control-group">
+                <label for="speechRateSlider">Speech Speed: <span id="speechRateDisplay">0.95x</span></label>
+                <input type="range" id="speechRateSlider" min="0.7" max="1.3" value="0.95" step="0.05">
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- REWIND & NAVIGATION SETTINGS -->
+        <section class="card rewind-card">
+          <div class="card-header">
+            <h3>Word Rewind Controls</h3>
+          </div>
+          <div class="card-body">
+            <div class="control-group">
+              <div class="control-label-row">
+                <label for="rewindStepInput">Rewind Word Step</label>
+                <span class="value-highlight">Default: 4 words</span>
+              </div>
+              <div class="input-with-button">
+                <input type="number" id="rewindStepInput" min="1" max="20" value="4">
+                <button id="applyRewindStepBtn" class="btn btn-secondary btn-sm">Set Step</button>
+              </div>
+            </div>
+
+            <div class="quick-rewind-buttons">
+              <button id="btnBack4" class="btn btn-action-secondary" title="Rewind N Words (Shortcut: Left Arrow)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="11 17 6 12 11 7"></polyline>
+                  <polyline points="18 17 13 12 18 7"></polyline>
+                </svg>
+                Back <span class="rewind-count-text">4</span>
+              </button>
+
+              <button id="btnRepeatWord" class="btn btn-action-secondary" title="Repeat Current Word (Shortcut: R)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21.5 2v6h-6"></path>
+                  <path d="M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+                </svg>
+                Repeat
+              </button>
+
+              <button id="btnSpellWord" class="btn btn-action-secondary" title="Spell Current Word out letter by letter (Shortcut: S)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 7V4h16v3"></path>
+                  <path d="M9 20h6"></path>
+                  <path d="M12 4v16"></path>
+                </svg>
+                Spell
+              </button>
+
+              <button id="btnForward4" class="btn btn-action-secondary" title="Skip Forward N Words (Shortcut: Right Arrow)">
+                Skip <span class="rewind-count-text">4</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="13 17 18 12 13 7"></polyline>
+                  <polyline points="6 17 11 12 6 7"></polyline>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- HANDS FREE VOICE COMMAND CHEATSHEET -->
+        <section class="card voice-guide-card">
+          <div class="card-header collapsible-header" id="voiceGuideHeader">
+            <h3>Voice Commands Guide</h3>
+            <span class="chevron-icon">&#9662;</span>
+          </div>
+          <div id="voiceGuideBody" class="card-body voice-guide-body">
+            <ul class="command-list">
+              <li><code>"Stop" / "Pause"</code> - Pause dictation instantly</li>
+              <li><code>"Continue" / "Resume" / "Go"</code> - Resume speaking</li>
+              <li><code>"Spell" / "Spell word"</code> - Spell word letter by letter</li>
+              <li><code>"Repeat"</code> - Repeat current word</li>
+              <li><code>"Go Back" / "Back 4 words"</code> - Rewind words</li>
+              <li><code>"2x" / "Double Speed"</code> - Double current speed</li>
+              <li><code>"Normal" / "Normal Speed"</code> - Reset to 1x speed</li>
+              <li><code>"Slower" / "Faster"</code> - Fine-tune WPM speed</li>
+            </ul>
+          </div>
+        </section>
+
+      </aside>
+
+      <!-- RIGHT PANEL: TELEPROMPTER & DICTATION PLAYER -->
+      <section class="teleprompter-area">
+        
+        <!-- PLAYER TOOLBAR & MASTER CONTROLS -->
+        <div class="player-toolbar">
+          
+          <div class="primary-playback-controls">
+            <button id="btnPlayPause" class="btn btn-primary btn-lg btn-play" disabled>
+              <svg id="playIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+              <svg id="pauseIcon" class="hidden" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                <rect x="6" y="4" width="4" height="16"></rect>
+                <rect x="14" y="4" width="4" height="16"></rect>
+              </svg>
+              <span id="playPauseText">Start Dictation</span>
+            </button>
+
+            <button id="btnStop" class="btn btn-danger btn-lg" disabled title="Stop & Reset to Start">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <rect x="5" y="5" width="14" height="14"></rect>
+              </svg>
+              Stop
+            </button>
+
+            <button id="btnQuickRewindMain" class="btn btn-secondary btn-lg" disabled title="Rewind words (Left Arrow)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="11 17 6 12 11 7"></polyline>
+                <polyline points="18 17 13 12 18 7"></polyline>
+              </svg>
+              - <span class="rewind-count-text">4</span> Words
+            </button>
+          </div>
+
+          <!-- Dictation Activity & Waveform Visualizer -->
+          <div class="dictation-activity-box">
+            <div id="waveformVisualizer" class="waveform-box idle">
+              <span class="bar bar1"></span>
+              <span class="bar bar2"></span>
+              <span class="bar bar3"></span>
+              <span class="bar bar4"></span>
+              <span class="bar bar5"></span>
+            </div>
+            <div class="activity-text-info">
+              <div id="activityStatus" class="activity-status">Waiting for document...</div>
+              <div id="currentWordFocus" class="current-word-focus">--</div>
+            </div>
+          </div>
+
+          <!-- Reader Stats & Progress -->
+          <div class="reader-stats">
+            <div class="stat-item">
+              <span class="stat-label">Words</span>
+              <span id="statWordsCount" class="stat-val">0 / 0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Est. Time</span>
+              <span id="statEstTime" class="stat-val">0m 0s</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Paragraph</span>
+              <span id="statParagraph" class="stat-val">0 / 0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROGRESS BAR -->
+        <div class="progress-bar-container">
+          <div id="dictationProgressBar" class="progress-bar-fill" style="width: 0%;"></div>
+        </div>
+
+        <!-- TELEPROMPTER DOCUMENT DISPLAY CANVAS -->
+        <div class="teleprompter-canvas-wrapper">
+          
+          <div id="emptyPromptState" class="empty-prompt-state">
+            <div class="empty-icon">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+            </div>
+            <h2>No PDF or Text Loaded</h2>
+            <p>Upload a PDF document or load the demo teacher essay to start word-by-word dictation.</p>
+            <p class="click-tip">Tip: You can click any word in the text during dictation to instantly jump speech position!</p>
+          </div>
+
+          <div id="textTeleprompter" class="text-teleprompter hidden">
+            <!-- Rendered paragraphs and interactive word spans will be injected here -->
+          </div>
+        </div>
+
+        <!-- FOOTER BAR: KEYBOARD SHORTCUTS & HINTS -->
+        <footer class="teleprompter-footer">
+          <div class="keyboard-shortcuts-bar">
+            <span class="shortcut-chip"><kbd>Space</kbd> Play / Pause</span>
+            <span class="shortcut-chip"><kbd>&larr;</kbd> Rewind 4 Words</span>
+            <span class="shortcut-chip"><kbd>&rarr;</kbd> Skip 4 Words</span>
+            <span class="shortcut-chip"><kbd>R</kbd> Repeat Word</span>
+            <span class="shortcut-chip"><kbd>Click Word</kbd> Jump Position</span>
+          </div>
+        </footer>
+
+      </section>
+
+    </div>
+  </div>
+
+</body>
+</html>
