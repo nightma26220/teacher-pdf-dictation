@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script type="module" crossorigin src="./assets/index-CeJdhAOl.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-C3YTH-f-.css">
+  <script type="module" crossorigin src="./assets/index-y7JfRa-j.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-BNgF4fE5.css">
 </head>
 <body class="light-theme">
   <div id="app" class="app-container">
@@ -127,28 +127,48 @@
           </div>
         </section>
 
-        <!-- TEACHER PERSONA SELECTOR -->
+        <!-- TEACHER PERSONA & VOICE CLONER -->
         <section class="card teacher-persona-card">
           <div class="card-header">
-            <h3>Teacher Voice & Persona</h3>
+            <h3>Teacher Persona & Voice Impersonator</h3>
           </div>
           <div class="card-body">
             <div class="character-select-grid">
-              <div id="charAnanya" class="character-card-btn active" data-character="ananya">
-                <span class="character-avatar">👩</span>
-                <span class="character-name">Prof. Ananya</span>
-                <span class="character-desc">Warm Indian Accent</span>
+              <div id="charMother" class="character-card-btn active" data-character="mother">
+                <span class="character-avatar">🤱</span>
+                <span class="character-name">Kind Mother</span>
+                <span class="character-desc">Gentle & Patient Maa</span>
               </div>
 
-              <div id="charRohan" class="character-card-btn" data-character="rohan">
-                <span class="character-avatar">👨</span>
-                <span class="character-name">Dr. Rohan</span>
-                <span class="character-desc">Articulate Indian Accent</span>
+              <div id="charGrandmother" class="character-card-btn" data-character="grandmother">
+                <span class="character-avatar">👵</span>
+                <span class="character-name">Frustrated Dadi</span>
+                <span class="character-desc">Impatient & Strict</span>
+              </div>
+
+              <div id="charPapa" class="character-card-btn" data-character="papa">
+                <span class="character-avatar">👨‍🏫</span>
+                <span class="character-name">Strict Papa</span>
+                <span class="character-desc">Commanding Tone</span>
+              </div>
+
+              <div id="charHenry" class="character-card-btn" data-character="henry">
+                <span class="character-avatar">👦</span>
+                <span class="character-name">Naughty Henry</span>
+                <span class="character-desc">Energetic Child</span>
               </div>
             </div>
 
+            <!-- Custom Voice Note Cloner -->
+            <div class="voice-cloner-box" style="margin-top: 6px;">
+              <button type="button" id="btnRecordVoiceNote" class="btn btn-secondary btn-full btn-sm">
+                🎙️ Record Voice Note to Clone (4s)
+              </button>
+              <div id="voiceCloneStatus" class="calc-notice hidden">Voice note analyzed! Custom voice clone active.</div>
+            </div>
+
             <div class="control-group" style="margin-top: 4px;">
-              <label for="voiceSelect">Custom System Voice</label>
+              <label for="voiceSelect">System Synthesizer Voice</label>
               <select id="voiceSelect" class="select-input">
                 <option value="">Loading system voices...</option>
               </select>
@@ -173,7 +193,9 @@
                 <button id="btnMult05" class="btn btn-secondary btn-xs" data-mult="0.5">0.5x</button>
                 <button id="btnMult10" class="btn btn-primary btn-xs active" data-mult="1.0">1.0x</button>
                 <button id="btnMult15" class="btn btn-secondary btn-xs" data-mult="1.5">1.5x</button>
-                <button id="btnMult20" class="btn btn-secondary btn-xs" data-mult="2.0">2x Speed</button>
+                <button id="btnMult20" class="btn btn-secondary btn-xs" data-mult="2.0">2x</button>
+                <button id="btnMult30" class="btn btn-secondary btn-xs" data-mult="3.0">3x</button>
+                <button id="btnMult40" class="btn btn-secondary btn-xs" data-mult="4.0">4x</button>
               </div>
             </div>
 
