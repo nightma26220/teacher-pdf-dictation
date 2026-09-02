@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DictateAI - Teacher PDF Dictation & Speech Assistant</title>
-  <meta name="description" content="A teacher-like PDF dictation web application that reads text word-by-word with intelligent writing pauses, voice commands, and word rewind controls.">
+  <title>DictateAI - Teacher PDF & Notebook Dictation Assistant</title>
+  <meta name="description" content="A teacher-like PDF and notebook dictation assistant with OCR technology, natural Indian teacher voices, word-by-word dynamic writing pauses, and hands-free voice commands.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <script type="module" crossorigin src="./assets/index-pL6CKbNp.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-BO2Ml-dJ.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="./assets/index-CeJdhAOl.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-C3YTH-f-.css">
 </head>
-<body class="dark-theme">
+<body class="light-theme">
   <div id="app" class="app-container">
     
     <!-- TOP HEADER -->
     <header class="app-header">
       <div class="brand-logo">
         <div class="logo-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path>
             <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
             <line x1="12" y1="19" x2="12" y2="22"></line>
@@ -26,7 +26,7 @@
         </div>
         <div class="brand-text">
           <h1>Dictate<span>AI</span></h1>
-          <span class="tagline">Teacher PDF Dictation & Writing Assistant</span>
+          <span class="tagline">Teacher PDF & Notebook Dictation Assistant</span>
         </div>
       </div>
 
@@ -41,7 +41,6 @@
             <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
             <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
             <line x1="12" y1="19" x2="12" y2="23"></line>
-            <line x1="8" y1="23" x2="16" y2="23"></line>
           </svg>
           <span id="voiceMicStatus">Voice Commands Off</span>
         </button>
@@ -59,8 +58,9 @@
           <div class="card-header">
             <h3>Document Source</h3>
             <div class="tab-pills">
-              <button id="tabPdf" class="tab-btn active" data-tab="pdf">Upload PDF</button>
-              <button id="tabText" class="tab-btn" data-tab="text">Paste Text</button>
+              <button id="tabPdf" class="tab-btn active" data-tab="pdf">📁 PDF</button>
+              <button id="tabOcr" class="tab-btn" data-tab="ocr">📷 Notebook OCR</button>
+              <button id="tabText" class="tab-btn" data-tab="text">📋 Text</button>
             </div>
           </div>
 
@@ -70,15 +70,14 @@
               <div class="touch-file-wrapper">
                 <input type="file" id="pdfFileInput" accept=".pdf,application/pdf,application/octet-stream,*/*" class="native-touch-file-input">
                 <div class="touch-file-visual">
-                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                     <polyline points="14 2 14 8 20 8"></polyline>
                     <line x1="12" y1="18" x2="12" y2="12"></line>
-                    <line x1="9" y1="15" x2="15" y2="15"></line>
                   </svg>
                   <div class="upload-text">
-                    <strong>📁 Tap Here to Choose PDF / File</strong>
-                    <small>Opens mobile Files / Drive picker instantly</small>
+                    <strong>📁 Tap Here to Choose PDF</strong>
+                    <small>Supports multi-page PDFs</small>
                   </div>
                 </div>
               </div>
@@ -89,6 +88,24 @@
               </div>
             </div>
 
+            <!-- OCR Notebook Photo Upload Zone -->
+            <div id="ocrUploadZone" class="upload-zone tab-content hidden">
+              <div class="touch-file-wrapper">
+                <input type="file" id="ocrImageInput" accept="image/*" capture="environment" class="native-touch-file-input">
+                <div class="touch-file-visual">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                    <circle cx="12" cy="13" r="4"></circle>
+                  </svg>
+                  <div class="upload-text">
+                    <strong>📷 Photo of Notebook Page / Image</strong>
+                    <small>Extracts handwritten & printed text with AI OCR</small>
+                  </div>
+                </div>
+              </div>
+              <div id="ocrStatusNotice" class="calc-notice hidden">Running OCR on notebook image...</div>
+            </div>
+
             <!-- Direct Text Input Zone -->
             <div id="textInputZone" class="tab-content hidden">
               <div class="text-actions-bar">
@@ -96,16 +113,45 @@
                   📋 Paste Text from Clipboard
                 </button>
               </div>
-              <textarea id="rawTextInput" placeholder="Paste or type text paragraphs here for dictation..." rows="6"></textarea>
+              <textarea id="rawTextInput" placeholder="Paste or type text paragraphs here for dictation..." rows="5"></textarea>
             </div>
 
             <div class="sample-btn-wrapper">
               <button id="loadSampleBtn" class="btn btn-secondary btn-full">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                 </svg>
                 Load Demo Teacher Essay
               </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- TEACHER PERSONA SELECTOR -->
+        <section class="card teacher-persona-card">
+          <div class="card-header">
+            <h3>Teacher Voice & Persona</h3>
+          </div>
+          <div class="card-body">
+            <div class="character-select-grid">
+              <div id="charAnanya" class="character-card-btn active" data-character="ananya">
+                <span class="character-avatar">👩</span>
+                <span class="character-name">Prof. Ananya</span>
+                <span class="character-desc">Warm Indian Accent</span>
+              </div>
+
+              <div id="charRohan" class="character-card-btn" data-character="rohan">
+                <span class="character-avatar">👨</span>
+                <span class="character-name">Dr. Rohan</span>
+                <span class="character-desc">Articulate Indian Accent</span>
+              </div>
+            </div>
+
+            <div class="control-group" style="margin-top: 4px;">
+              <label for="voiceSelect">Custom System Voice</label>
+              <select id="voiceSelect" class="select-input">
+                <option value="">Loading system voices...</option>
+              </select>
             </div>
           </div>
         </section>
@@ -125,7 +171,7 @@
               </div>
               <div class="multiplier-btn-group">
                 <button id="btnMult05" class="btn btn-secondary btn-xs" data-mult="0.5">0.5x</button>
-                <button id="btnMult10" class="btn btn-primary btn-xs active" data-mult="1.0">1.0x (Normal)</button>
+                <button id="btnMult10" class="btn btn-primary btn-xs active" data-mult="1.0">1.0x</button>
                 <button id="btnMult15" class="btn btn-secondary btn-xs" data-mult="1.5">1.5x</button>
                 <button id="btnMult20" class="btn btn-secondary btn-xs" data-mult="2.0">2x Speed</button>
               </div>
@@ -135,15 +181,15 @@
             <div class="control-group checkbox-group">
               <label class="checkbox-label" for="dictatePunctuationToggle">
                 <input type="checkbox" id="dictatePunctuationToggle" checked>
-                <span>Dictate Punctuations (say "comma", "full stop", "colon")</span>
+                <span>Dictate Punctuations (say "comma", "full stop")</span>
               </label>
             </div>
 
             <!-- Announce New Paragraph Checkbox -->
             <div class="control-group checkbox-group">
-              <label class="checkbox-label" for="announceParagraphToggle">
+              <label class="checkbox-label" for="announceParagraphToggle" checked>
                 <input type="checkbox" id="announceParagraphToggle" checked>
-                <span>Announce New Paragraph ("Warning user, new paragraph")</span>
+                <span>Announce New Paragraph ("Warning new paragraph")</span>
               </label>
             </div>
 
@@ -173,28 +219,20 @@
 
             <div class="control-group">
               <div class="control-label-row">
-                <label for="periodPauseSlider">Full Stop / Sentence Pause</label>
+                <label for="periodPauseSlider">Full Stop Pause</label>
                 <span id="periodPauseDisplay" class="value-highlight">2.5s</span>
               </div>
               <input type="range" id="periodPauseSlider" min="1.0" max="5.0" value="2.5" step="0.1">
             </div>
 
-            <!-- Speech Synthesis Voice Settings -->
-            <div class="control-group">
-              <label for="voiceSelect">Teacher Voice</label>
-              <select id="voiceSelect" class="select-input">
-                <option value="">Loading system voices...</option>
-              </select>
-            </div>
-
             <div class="control-row-dual">
               <div class="control-group">
-                <label for="pitchSlider">Pitch: <span id="pitchDisplay">1.05</span></label>
-                <input type="range" id="pitchSlider" min="0.7" max="1.3" value="1.05" step="0.05">
+                <label for="pitchSlider">Pitch: <span id="pitchDisplay">1.08</span></label>
+                <input type="range" id="pitchSlider" min="0.7" max="1.3" value="1.08" step="0.05">
               </div>
               <div class="control-group">
-                <label for="speechRateSlider">Speech Speed: <span id="speechRateDisplay">0.95x</span></label>
-                <input type="range" id="speechRateSlider" min="0.7" max="1.3" value="0.95" step="0.05">
+                <label for="speechRateSlider">Speech Speed: <span id="speechRateDisplay">0.92x</span></label>
+                <input type="range" id="speechRateSlider" min="0.7" max="1.3" value="0.92" step="0.05">
               </div>
             </div>
 
@@ -204,7 +242,7 @@
         <!-- REWIND & NAVIGATION SETTINGS -->
         <section class="card rewind-card">
           <div class="card-header">
-            <h3>Word Rewind Controls</h3>
+            <h3>Word Rewind & Spell Controls</h3>
           </div>
           <div class="card-body">
             <div class="control-group">
@@ -220,7 +258,7 @@
 
             <div class="quick-rewind-buttons">
               <button id="btnBack4" class="btn btn-action-secondary" title="Rewind N Words (Shortcut: Left Arrow)">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="11 17 6 12 11 7"></polyline>
                   <polyline points="18 17 13 12 18 7"></polyline>
                 </svg>
@@ -228,7 +266,7 @@
               </button>
 
               <button id="btnRepeatWord" class="btn btn-action-secondary" title="Repeat Current Word (Shortcut: R)">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M21.5 2v6h-6"></path>
                   <path d="M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
                 </svg>
@@ -236,7 +274,7 @@
               </button>
 
               <button id="btnSpellWord" class="btn btn-action-secondary" title="Spell Current Word out letter by letter (Shortcut: S)">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M4 7V4h16v3"></path>
                   <path d="M9 20h6"></path>
                   <path d="M12 4v16"></path>
@@ -246,7 +284,7 @@
 
               <button id="btnForward4" class="btn btn-action-secondary" title="Skip Forward N Words (Shortcut: Right Arrow)">
                 Skip <span class="rewind-count-text">4</span>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="13 17 18 12 13 7"></polyline>
                   <polyline points="6 17 11 12 6 7"></polyline>
                 </svg>
@@ -285,10 +323,10 @@
           
           <div class="primary-playback-controls">
             <button id="btnPlayPause" class="btn btn-primary btn-lg btn-play" disabled>
-              <svg id="playIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+              <svg id="playIcon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                 <polygon points="5 3 19 12 5 21 5 3"></polygon>
               </svg>
-              <svg id="pauseIcon" class="hidden" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+              <svg id="pauseIcon" class="hidden" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                 <rect x="6" y="4" width="4" height="16"></rect>
                 <rect x="14" y="4" width="4" height="16"></rect>
               </svg>
@@ -296,14 +334,14 @@
             </button>
 
             <button id="btnStop" class="btn btn-danger btn-lg" disabled title="Stop & Reset to Start">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                 <rect x="5" y="5" width="14" height="14"></rect>
               </svg>
               Stop
             </button>
 
             <button id="btnQuickRewindMain" class="btn btn-secondary btn-lg" disabled title="Rewind words (Left Arrow)">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="11 17 6 12 11 7"></polyline>
                 <polyline points="18 17 13 12 18 7"></polyline>
               </svg>
@@ -353,17 +391,16 @@
           
           <div id="emptyPromptState" class="empty-prompt-state">
             <div class="empty-icon">
-              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                 <polyline points="14 2 14 8 20 8"></polyline>
                 <line x1="16" y1="13" x2="8" y2="13"></line>
                 <line x1="16" y1="17" x2="8" y2="17"></line>
-                <polyline points="10 9 9 9 8 9"></polyline>
               </svg>
             </div>
-            <h2>No PDF or Text Loaded</h2>
-            <p>Upload a PDF document or load the demo teacher essay to start word-by-word dictation.</p>
-            <p class="click-tip">Tip: You can click any word in the text during dictation to instantly jump speech position!</p>
+            <h2>No Document or Notebook Photo Loaded</h2>
+            <p>Upload a PDF, snap a photo of a notebook page (OCR), or paste text to start word-by-word dictation.</p>
+            <p class="click-tip">Tip: Click any word during dictation to jump speech position!</p>
           </div>
 
           <div id="textTeleprompter" class="text-teleprompter hidden">
@@ -377,6 +414,7 @@
             <span class="shortcut-chip"><kbd>Space</kbd> Play / Pause</span>
             <span class="shortcut-chip"><kbd>&larr;</kbd> Rewind 4 Words</span>
             <span class="shortcut-chip"><kbd>&rarr;</kbd> Skip 4 Words</span>
+            <span class="shortcut-chip"><kbd>S</kbd> Spell Word</span>
             <span class="shortcut-chip"><kbd>R</kbd> Repeat Word</span>
             <span class="shortcut-chip"><kbd>Click Word</kbd> Jump Position</span>
           </div>
